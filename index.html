@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FINA Points Calculator CDU Granada</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        form {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-top: 10px;
+        }
+        input, select, button {
+            margin-top: 5px;
+            padding: 5px;
+            font-size: 1em;
+        }
+        #result {
+            margin-top: 20px;
+            font-size: 1.2em;
+            font-weight: bold;
+        }
+    </style>
+  </head>
+  <body>
+    <h1>FINA Points Calculator CDU Granada</h1>
+    <form id="finaForm"> <label for="poolType">Pool Type:</label>
+      <select id="poolType" required="">
+        <option value="25m">25m Pool</option>
+        <option value="50m">50m Pool</option>
+      </select>
+      <label for="time">Time (MM:SS.00):</label> <input id="time" placeholder="Enter time (e.g., 01:05.23)"
+
+        required="" type="text"> <label for="event">Swim Event:</label>
+      
+      <select id="event" required="">
+        <option value="">Loading events...</option>
+      </select>
+      <label for="gender">Gender:</label>
+      <select id="gender" required="">
+        <option value="">Select Gender</option>
+        <option value="Masculino">Masculino</option>
+        <option value="Femenino">Femenino</option>
+      </select>
+      <label for="ageGroup">Age Group:</label>
+      <select id="ageGroup" required="">
+        <option value="">Select Age Group</option>
+        <option value="20-24">20-24</option>
+        <option value="25-29">25-29</option>
+        <option value="30-34">30-34</option>
+        <option value="35-39">35-39</option>
+        <option value="40-44">40-44</option>
+        <option value="45-49">45-49</option>
+        <option value="50-54">50-54</option>
+        <option value="55-59">55-59</option>
+        <option value="60-64">60-64</option>
+        <option value="65-69">65-69</option>
+        <option value="70-74">70-74</option>
+        <option value="75-79">75-79</option>
+      </select>
+      <button type="button" onclick="calculateFINA()">Calculate Points</button>
+    </form>
+    <div id="result"></div>
+    <script>
+        let worldRecords = {}; // Object to store world records dynamically loaded
+
+        // Load records from CSV based on pool type
+        function loadRecords(poolType) {
+            const fileName = poolType === "25m" ? "short_course_records.csv" : "long_course_records.csv";
+
+            fetch(fileName)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`Failed to load ${fileName}`);
+                    }
+                    return response.text();
+                })
+                .then(csvText => {
+                    parseCSV(csvText);
+                    loadEvents();
+                })
+                .catch(error => {
+                    console.error(error);
+                    document.getElementById("event").innerHTML = '<option value="">Failed to load events</option>';
+                });
+        }
+
+        // Parse CSV into worldRecords object
+        function parseCSV(csvText) {
+            worldRecords = {}; // Clear previous records
+            const lines = csvText.split("\n").map(line => line.trim());
+            lines.forEach(line => {
+                const [event, gender, ageGroup, record] = line.split(",");
+                const key = `${event}_${gender}_${ageGroup}`;
+                worldRecords[key] = parseFloat(record); // Store record in seconds
+            });
+        }
+
+        // Populate swim events based on loaded worldRecords
+        function loadEvents() {
+            const uniqueEvents = new Set();
+            for (const key in worldRecords) {
+                const [event] = key.split("_");
+                uniqueEvents.add(event);
+            }
+
+            const eventSelect = document.getElementById("event");
+            eventSelect.innerHTML = Array.from(uniqueEvents)
+                .map(event => `<option value="${event}">${event}</option>`)
+                .join('');
+        }
+
+        // Calculate FINA points
+        function calculateFINA() {
+            const poolType = document.getElementById("poolType").value;
+            const timeInput = document.getElementById("time").value;
+            const event = document.getElementById("event").value;
+            const gender = document.getElementById("gender").value;
+            const ageGroup = document.getElementById("ageGroup").value;
+
+            if (!poolType || !timeInput || !event || !gender || !ageGroup) {
+                document.getElementById("result").textContent = "Please fill out all fields.";
+                return;
+            }
+
+            // Convert time (MM:SS.00) to total seconds
+            const timeParts = timeInput.split(":");
+            const minutes = parseInt(timeParts[0], 10);
+            const seconds = parseFloat(timeParts[1]);
+            const totalTime = minutes * 60 + seconds;
+
+            // Get the world record
+            const recordKey = `${event}_${gender}_${ageGroup}`;
+            const worldRecord = worldRecords[recordKey];
+
+            if (!worldRecord) {
+                document.getElementById("result").textContent = "World record not found for selected criteria.";
+                return;
+            }
+
+            // Calculate FINA points
+            const points = 1000 * Math.pow(worldRecord / totalTime, 3);
+
+            document.getElementById("result").textContent = 
+                `FINA Points: ${points.toFixed(2)}`;
+        }
+
+        // Handle pool type change
+        document.getElementById("poolType").addEventListener("change", (event) => {
+            const poolType = event.target.value;
+            loadRecords(poolType);
+        });
+
+        // Initialize app
+        document.addEventListener("DOMContentLoaded", () => {
+            loadRecords("25m"); // Load 25m pool records by default
+        });
+    </script>
+  </body>
+</html>
