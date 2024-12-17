@@ -74,7 +74,7 @@
 
         // Load records from CSV based on pool type
         function loadRecords(poolType) {
-            const fileName = poolType === "25m" ? "short_course_records.csv" : "long_course_records.csv";
+            const fileName = poolType === "25m" ? "short_course_records.csv" : "Long_Course_Records.txt";
 
             fetch(fileName)
                 .then(response => {
