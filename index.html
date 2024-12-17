@@ -118,39 +118,45 @@
 
         // Calculate FINA points
         function calculateFINA() {
-            const poolType = document.getElementById("poolType").value;
-            const timeInput = document.getElementById("time").value;
-            const event = document.getElementById("event").value;
-            const gender = document.getElementById("gender").value;
-            const ageGroup = document.getElementById("ageGroup").value;
+    const poolType = document.getElementById("poolType").value.trim();
+    const timeInput = document.getElementById("time").value.trim();
+    const event = document.getElementById("event").value.trim();
+    const gender = document.getElementById("gender").value.trim();
+    const ageGroup = document.getElementById("ageGroup").value.trim();
 
-            if (!poolType || !timeInput || !event || !gender || !ageGroup) {
-                document.getElementById("result").textContent = "Please fill out all fields.";
-                return;
-            }
+    if (!timeInput || !event || !gender || !ageGroup) {
+        document.getElementById("result").textContent = "Please fill out all fields.";
+        return;
+    }
 
-            // Convert time (MM:SS.00) to total seconds
-            const timeParts = timeInput.split(":");
-            const minutes = parseInt(timeParts[0], 10);
-            const seconds = parseFloat(timeParts[1]);
-            const totalTime = minutes * 60 + seconds;
+    // Parse time input (MM:SS.00)
+    const timeParts = timeInput.split(":");
+    if (timeParts.length !== 2) {
+        document.getElementById("result").textContent = "Invalid time format. Use MM:SS.00.";
+        return;
+    }
 
-            // Get the world record
-            const recordKey = `${event}_${gender}_${ageGroup}`;
-            const worldRecord = worldRecords[recordKey];
+    const minutes = parseInt(timeParts[0], 10);
+    const seconds = parseFloat(timeParts[1]);
+    const totalTime = minutes * 60 + seconds;
 
-            if (!worldRecord) {
-                document.getElementById("result").textContent = "World record not found for selected criteria.";
-                return;
-            }
+    // Construct record key
+    const recordKey = `${event}_${gender}_${ageGroup}`;
+    console.log("Generated key:", recordKey);
 
-            // Calculate FINA points
-            const points = 1000 * Math.pow((worldRecord / totalTime), 3);
+    // Fetch world record
+    const worldRecord = worldRecords[recordKey];
+    console.log("World Record:", worldRecord);
 
-            document.getElementById("result").textContent = 
-                `FINA Points: ${points.toFixed(2)}`;
-        }
+    if (!worldRecord) {
+        document.getElementById("result").textContent = "World record not found for selected criteria.";
+        return;
+    }
 
+    // Calculate FINA points
+    const points = 1000 * Math.pow(worldRecord / totalTime, 3);
+    document.getElementById("result").textContent = `FINA Points: ${points.toFixed(2)}`;
+}
         // Handle pool type change
         document.getElementById("poolType").addEventListener("change", (event) => {
             const poolType = event.target.value;
