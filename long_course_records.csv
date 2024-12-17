@@ -11,9 +11,9 @@ event,gender,ageGroup,record
 50 M. BRST,Femenino,25-29,31.6
 100 M. BRST,Femenino,25-29, 1:10.56
 200 M. BRST,Femenino,25-29, 2:32.35
-50 M. FLY ,Femenino,25-29,26.32
-100 M. FLY ,Femenino,25-29,59.99
-200 M. FLY ,Femenino,25-29, 2:15.02
+50 M. FLY,Femenino,25-29,26.32
+100 M. FLY,Femenino,25-29,59.99
+200 M. FLY,Femenino,25-29, 2:15.02
 200 M. I.M.,Femenino,25-29, 2:20.71
 400 M. I.M.,Femenino,25-29, 5:02.78
 50 M. FREE,Femenino,30-34,25.49
@@ -28,9 +28,9 @@ event,gender,ageGroup,record
 50 M. BRST,Femenino,30-34,32.22
 100 M. BRST,Femenino,30-34, 1:10.10
 200 M. BRST,Femenino,30-34, 2:28.93
-50 M. FLY ,Femenino,30-34,26.8
-100 M. FLY ,Femenino,30-34,58.81
-200 M. FLY ,Femenino,30-34, 2:13.60
+50 M. FLY,Femenino,30-34,26.8
+100 M. FLY,Femenino,30-34,58.81
+200 M. FLY,Femenino,30-34, 2:13.60
 200 M. I.M.,Femenino,30-34, 2:13.89
 400 M. I.M.,Femenino,30-34, 4:56.08
 50 M. FREE,Femenino,35-39,25.58
@@ -45,9 +45,9 @@ event,gender,ageGroup,record
 50 M. BRST,Femenino,35-39,31.35
 100 M. BRST,Femenino,35-39, 1:10.47
 200 M. BRST,Femenino,35-39, 2:35.40
-50 M. FLY ,Femenino,35-39,27.46
-100 M. FLY ,Femenino,35-39, 1:02.04
-200 M. FLY ,Femenino,35-39, 2:20.21
+50 M. FLY,Femenino,35-39,27.46
+100 M. FLY,Femenino,35-39, 1:02.04
+200 M. FLY,Femenino,35-39, 2:20.21
 200 M. I.M.,Femenino,35-39, 2:21.09
 400 M. I.M.,Femenino,35-39, 4:59.59
 50 M. FREE,Femenino,40-44,26.44
@@ -62,9 +62,9 @@ event,gender,ageGroup,record
 50 M. BRST,Femenino,40-44,32.42
 100 M. BRST,Femenino,40-44, 1:12.29
 200 M. BRST,Femenino,40-44, 2:38.44
-50 M. FLY ,Femenino,40-44,28.31
-100 M. FLY ,Femenino,40-44, 1:03.36
-200 M. FLY ,Femenino,40-44, 2:24.78
+50 M. FLY,Femenino,40-44,28.31
+100 M. FLY,Femenino,40-44, 1:03.36
+200 M. FLY,Femenino,40-44, 2:24.78
 200 M. I.M.,Femenino,40-44, 2:20.73
 400 M. I.M.,Femenino,40-44, 4:58.01
 50 M. FREE,Femenino,45-49,26.59
@@ -79,9 +79,9 @@ event,gender,ageGroup,record
 50 M. BRST,Femenino,45-49,33.56
 100 M. BRST,Femenino,45-49, 1:12.34
 200 M. BRST,Femenino,45-49, 2:39.95
-50 M. FLY ,Femenino,45-49,28.4
-100 M. FLY ,Femenino,45-49, 1:04.96
-200 M. FLY ,Femenino,45-49, 2:24.34
+50 M. FLY,Femenino,45-49,28.4
+100 M. FLY,Femenino,45-49, 1:04.96
+200 M. FLY,Femenino,45-49, 2:24.34
 200 M. I.M.,Femenino,45-49, 2:21.37
 400 M. I.M.,Femenino,45-49, 5:13.85
 50 M. FREE,Femenino,50-54,27.09
@@ -96,9 +96,9 @@ event,gender,ageGroup,record
 50 M. BRST,Femenino,50-54,34.18
 100 M. BRST,Femenino,50-54, 1:15.44
 200 M. BRST,Femenino,50-54, 2:44.66
-50 M. FLY ,Femenino,50-54,29.08
-100 M. FLY ,Femenino,50-54, 1:07.80
-200 M. FLY ,Femenino,50-54, 2:30.66
+50 M. FLY,Femenino,50-54,29.08
+100 M. FLY,Femenino,50-54, 1:07.80
+200 M. FLY,Femenino,50-54, 2:30.66
 200 M. I.M.,Femenino,50-54, 2:31.02
 400 M. I.M.,Femenino,50-54, 5:20.68
 50 M. FREE,Femenino,55-59,27.94
@@ -113,9 +113,9 @@ event,gender,ageGroup,record
 50 M. BRST,Femenino,55-59,35.59
 100 M. BRST,Femenino,55-59, 1:19.90
 200 M. BRST,Femenino,55-59, 2:57.29
-50 M. FLY ,Femenino,55-59,30.37
-100 M. FLY ,Femenino,55-59, 1:07.55
-200 M. FLY ,Femenino,55-59, 2:36.33
+50 M. FLY,Femenino,55-59,30.37
+100 M. FLY,Femenino,55-59, 1:07.55
+200 M. FLY,Femenino,55-59, 2:36.33
 200 M. I.M.,Femenino,55-59, 2:31.51
 400 M. I.M.,Femenino,55-59, 5:22.41
 50 M. FREE,Femenino,60-64,28.84
@@ -130,9 +130,9 @@ event,gender,ageGroup,record
 50 M. BRST,Femenino,60-64,37.43
 100 M. BRST,Femenino,60-64, 1:22.80
 200 M. BRST,Femenino,60-64, 3:00.11
-50 M. FLY ,Femenino,60-64,29.9
-100 M. FLY ,Femenino,60-64, 1:08.24
-200 M. FLY ,Femenino,60-64, 2:41.03
+50 M. FLY,Femenino,60-64,29.9
+100 M. FLY,Femenino,60-64, 1:08.24
+200 M. FLY,Femenino,60-64, 2:41.03
 200 M. I.M.,Femenino,60-64, 2:32.30
 400 M. I.M.,Femenino,60-64, 5:30.07
 50 M. FREE,Femenino,65-69,29.1
@@ -147,9 +147,9 @@ event,gender,ageGroup,record
 50 M. BRST,Femenino,65-69,39.91
 100 M. BRST,Femenino,65-69, 1:28.18
 200 M. BRST,Femenino,65-69, 3:12.63
-50 M. FLY ,Femenino,65-69,32.36
-100 M. FLY ,Femenino,65-69, 1:13.70
-200 M. FLY ,Femenino,65-69, 2:57.26
+50 M. FLY,Femenino,65-69,32.36
+100 M. FLY,Femenino,65-69, 1:13.70
+200 M. FLY,Femenino,65-69, 2:57.26
 200 M. I.M.,Femenino,65-69, 2:51.52
 400 M. I.M.,Femenino,65-69, 6:14.58
 50 M. FREE,Femenino,70-74,30.73
@@ -164,9 +164,9 @@ event,gender,ageGroup,record
 50 M. BRST,Femenino,70-74,41.67
 100 M. BRST,Femenino,70-74, 1:35.93
 200 M. BRST,Femenino,70-74, 3:29.25
-50 M. FLY ,Femenino,70-74,34.43
-100 M. FLY ,Femenino,70-74, 1:16.07
-200 M. FLY ,Femenino,70-74, 3:12.76
+50 M. FLY,Femenino,70-74,34.43
+100 M. FLY,Femenino,70-74, 1:16.07
+200 M. FLY,Femenino,70-74, 3:12.76
 200 M. I.M.,Femenino,70-74, 3:00.96
 400 M. I.M.,Femenino,70-74, 6:38.63
 50 M. FREE,Femenino,75-79,34.11
@@ -181,9 +181,9 @@ event,gender,ageGroup,record
 50 M. BRST,Femenino,75-79,43.95
 100 M. BRST,Femenino,75-79, 1:38.81
 200 M. BRST,Femenino,75-79, 3:40.84
-50 M. FLY ,Femenino,75-79,38.93
-100 M. FLY ,Femenino,75-79, 1:34.88
-200 M. FLY ,Femenino,75-79, 3:44.93
+50 M. FLY,Femenino,75-79,38.93
+100 M. FLY,Femenino,75-79, 1:34.88
+200 M. FLY,Femenino,75-79, 3:44.93
 200 M. I.M.,Femenino,75-79, 3:21.84
 400 M. I.M.,Femenino,75-79, 7:35.32
 50 M. FREE,Masculino,25-29,22.3
@@ -198,9 +198,9 @@ event,gender,ageGroup,record
 50 M. BRST,Masculino,25-29,27.21
 100 M. BRST,Masculino,25-29, 1:00.39
 200 M. BRST,Masculino,25-29, 2:11.78
-50 M. FLY ,Masculino,25-29,23.71
-100 M. FLY ,Masculino,25-29,53.09
-200 M. FLY ,Masculino,25-29, 2:00.74
+50 M. FLY,Masculino,25-29,23.71
+100 M. FLY,Masculino,25-29,53.09
+200 M. FLY,Masculino,25-29, 2:00.74
 200 M. I.M.,Masculino,25-29, 2:03.62
 400 M. I.M.,Masculino,25-29, 4:30.05
 50 M. FREE,Masculino,30-34,22.13
@@ -215,9 +215,9 @@ event,gender,ageGroup,record
 50 M. BRST,Masculino,30-34,27.67
 100 M. BRST,Masculino,30-34, 1:00.83
 200 M. BRST,Masculino,30-34, 2:16.79
-50 M. FLY ,Masculino,30-34,23.16
-100 M. FLY ,Masculino,30-34,53.1
-200 M. FLY ,Masculino,30-34, 2:03.43
+50 M. FLY,Masculino,30-34,23.16
+100 M. FLY,Masculino,30-34,53.1
+200 M. FLY,Masculino,30-34, 2:03.43
 200 M. I.M.,Masculino,30-34, 2:02.18
 400 M. I.M.,Masculino,30-34, 4:20.81
 50 M. FREE,Masculino,35-39,22.72
@@ -232,9 +232,9 @@ event,gender,ageGroup,record
 50 M. BRST,Masculino,35-39,27.83
 100 M. BRST,Masculino,35-39, 1:01.99
 200 M. BRST,Masculino,35-39, 2:20.11
-50 M. FLY ,Masculino,35-39,24.03
-100 M. FLY ,Masculino,35-39,53.65
-200 M. FLY ,Masculino,35-39, 2:02.54
+50 M. FLY,Masculino,35-39,24.03
+100 M. FLY,Masculino,35-39,53.65
+200 M. FLY,Masculino,35-39, 2:02.54
 200 M. I.M.,Masculino,35-39, 2:05.65
 400 M. I.M.,Masculino,35-39, 4:36.66
 50 M. FREE,Masculino,40-44,23.14
@@ -249,9 +249,9 @@ event,gender,ageGroup,record
 50 M. BRST,Masculino,40-44,28.84
 100 M. BRST,Masculino,40-44, 1:03.60
 200 M. BRST,Masculino,40-44, 2:18.57
-50 M. FLY ,Masculino,40-44,23.72
-100 M. FLY ,Masculino,40-44,55.29
-200 M. FLY ,Masculino,40-44, 2:05.55
+50 M. FLY,Masculino,40-44,23.72
+100 M. FLY,Masculino,40-44,55.29
+200 M. FLY,Masculino,40-44, 2:05.55
 200 M. I.M.,Masculino,40-44, 2:08.63
 400 M. I.M.,Masculino,40-44, 4:42.54
 50 M. FREE,Masculino,45-49,23.55
@@ -266,9 +266,9 @@ event,gender,ageGroup,record
 50 M. BRST,Masculino,45-49,29.22
 100 M. BRST,Masculino,45-49, 1:04.77
 200 M. BRST,Masculino,45-49, 2:19.44
-50 M. FLY ,Masculino,45-49,24.96
-100 M. FLY ,Masculino,45-49,56.75
-200 M. FLY ,Masculino,45-49, 2:06.94
+50 M. FLY,Masculino,45-49,24.96
+100 M. FLY,Masculino,45-49,56.75
+200 M. FLY,Masculino,45-49, 2:06.94
 200 M. I.M.,Masculino,45-49, 2:10.09
 400 M. I.M.,Masculino,45-49, 4:43.83
 50 M. FREE,Masculino,50-54,24.08
@@ -283,9 +283,9 @@ event,gender,ageGroup,record
 50 M. BRST,Masculino,50-54,29.23
 100 M. BRST,Masculino,50-54, 1:06.12
 200 M. BRST,Masculino,50-54, 2:24.44
-50 M. FLY ,Masculino,50-54,25.53
-100 M. FLY ,Masculino,50-54,56.99
-200 M. FLY ,Masculino,50-54, 2:13.26
+50 M. FLY,Masculino,50-54,25.53
+100 M. FLY,Masculino,50-54,56.99
+200 M. FLY,Masculino,50-54, 2:13.26
 200 M. I.M.,Masculino,50-54, 2:11.15
 400 M. I.M.,Masculino,50-54, 4:45.61
 50 M. FREE,Masculino,55-59,24.45
@@ -300,9 +300,9 @@ event,gender,ageGroup,record
 50 M. BRST,Masculino,55-59,30.02
 100 M. BRST,Masculino,55-59, 1:07.65
 200 M. BRST,Masculino,55-59, 2:30.63
-50 M. FLY ,Masculino,55-59,26.47
-100 M. FLY ,Masculino,55-59, 1:00.56
-200 M. FLY ,Masculino,55-59, 2:16.78
+50 M. FLY,Masculino,55-59,26.47
+100 M. FLY,Masculino,55-59, 1:00.56
+200 M. FLY,Masculino,55-59, 2:16.78
 200 M. I.M.,Masculino,55-59, 2:20.67
 400 M. I.M.,Masculino,55-59, 4:57.55
 50 M. FREE,Masculino,60-64,24.82
@@ -317,9 +317,9 @@ event,gender,ageGroup,record
 50 M. BRST,Masculino,60-64,30.57
 100 M. BRST,Masculino,60-64, 1:09.57
 200 M. BRST,Masculino,60-64, 2:33.57
-50 M. FLY ,Masculino,60-64,27.57
-100 M. FLY ,Masculino,60-64, 1:02.00
-200 M. FLY ,Masculino,60-64, 2:23.52
+50 M. FLY,Masculino,60-64,27.57
+100 M. FLY,Masculino,60-64, 1:02.00
+200 M. FLY,Masculino,60-64, 2:23.52
 200 M. I.M.,Masculino,60-64, 2:21.99
 400 M. I.M.,Masculino,60-64, 5:08.20
 50 M. FREE,Masculino,65-69,26.19
@@ -334,9 +334,9 @@ event,gender,ageGroup,record
 50 M. BRST,Masculino,65-69,33.3
 100 M. BRST,Masculino,65-69, 1:14.77
 200 M. BRST,Masculino,65-69, 2:41.54
-50 M. FLY ,Masculino,65-69,28.26
-100 M. FLY ,Masculino,65-69, 1:05.82
-200 M. FLY ,Masculino,65-69, 2:32.00
+50 M. FLY,Masculino,65-69,28.26
+100 M. FLY,Masculino,65-69, 1:05.82
+200 M. FLY,Masculino,65-69, 2:32.00
 200 M. I.M.,Masculino,65-69, 2:25.22
 400 M. I.M.,Masculino,65-69, 5:13.36
 50 M. FREE,Masculino,70-74,27.12
@@ -351,9 +351,9 @@ event,gender,ageGroup,record
 50 M. BRST,Masculino,70-74,34.69
 100 M. BRST,Masculino,70-74, 1:17.80
 200 M. BRST,Masculino,70-74, 2:48.97
-50 M. FLY ,Masculino,70-74,29.84
-100 M. FLY ,Masculino,70-74, 1:07.40
-200 M. FLY ,Masculino,70-74, 2:47.17
+50 M. FLY,Masculino,70-74,29.84
+100 M. FLY,Masculino,70-74, 1:07.40
+200 M. FLY,Masculino,70-74, 2:47.17
 200 M. I.M.,Masculino,70-74, 2:35.97
 400 M. I.M.,Masculino,70-74, 5:55.97
 50 M. FREE,Masculino,75-79,28.49
@@ -368,8 +368,8 @@ event,gender,ageGroup,record
 50 M. BRST,Masculino,75-79,38.12
 100 M. BRST,Masculino,75-79, 1:27.47
 200 M. BRST,Masculino,75-79, 3:13.93
-50 M. FLY ,Masculino,75-79,31.75
-100 M. FLY ,Masculino,75-79, 1:16.87
-200 M. FLY ,Masculino,75-79, 3:08.54
+50 M. FLY,Masculino,75-79,31.75
+100 M. FLY,Masculino,75-79, 1:16.87
+200 M. FLY,Masculino,75-79, 3:08.54
 200 M. I.M.,Masculino,75-79, 2:53.12
 400 M. I.M.,Masculino,75-79, 6:34.91
