@@ -65,8 +65,10 @@
         <option value="75-79">75-79</option>
       </select>
       <button type="button" onclick="calculateFINA()">Calculate Points</button>
+      <button onclick="showWorldRecord()">Show World Record</button>
     </form>
     <div id="result"></div>
+    <div id="recordDisplay"></div>
     <script>
         let worldRecords = {}; // Object to store world records dynamically loaded
 
@@ -115,6 +117,36 @@
                 .map(event => `<option value="${event}">${event}</option>`)
                 .join('');
         }
+				function showWorldRecord() {
+    const poolType = document.getElementById("poolType").value.trim();
+    const event = document.getElementById("event").value.trim();
+    const gender = document.getElementById("gender").value.trim();
+    const ageGroup = document.getElementById("ageGroup").value.trim();
+
+    if (!event || !gender || !ageGroup) {
+        document.getElementById("recordDisplay").textContent = "Please select all fields to view the world record.";
+        return;
+    }
+
+    // Construct record key
+    const recordKey = `${event}_${gender}_${ageGroup}`;
+    console.log("Generated key for record:", recordKey);
+
+    // Fetch world record
+    const worldRecord = worldRecords[recordKey];
+    console.log("World Record:", worldRecord);
+
+    if (!worldRecord) {
+        document.getElementById("recordDisplay").textContent = "World record not found for selected criteria.";
+    } else {
+        // Convert world record seconds to MM:SS.00 format
+        const recordMinutes = Math.floor(worldRecord / 60);
+        const recordSeconds = (worldRecord % 60).toFixed(2);
+        const formattedRecord = `${recordMinutes}:${recordSeconds.padStart(5, "0")}`;
+        
+        document.getElementById("recordDisplay").textContent = `World Record Time: ${formattedRecord}`;
+    }
+}
 
         // Calculate FINA points
         function calculateFINA() {
@@ -157,6 +189,7 @@
     const points = 1000 * Math.pow(worldRecord / totalTime, 3);
     document.getElementById("result").textContent = `FINA Points: ${points.toFixed(2)}`;
 }
+
         // Handle pool type change
         document.getElementById("poolType").addEventListener("change", (event) => {
             const poolType = event.target.value;
