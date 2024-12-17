@@ -145,7 +145,7 @@
             }
 
             // Calculate FINA points
-            const points = 1000 * (worldRecord / totalTime)*3;
+            const points = 1000 * Math.pow(worldRecord / totalTime,3);
 
             document.getElementById("result").textContent = 
                 `FINA Points: ${points.toFixed(2)}`;
