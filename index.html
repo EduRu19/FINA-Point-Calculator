@@ -65,7 +65,7 @@
         <option value="75-79">75-79</option>
       </select>
       <button type="button" onclick="calculateFINA()">Calculate Points</button>
-      <button onclick="showWorldRecord()">Show World Record</button>
+     <button type="button" onclick="showWorldRecord()">Show World Record</button>
     </form>
     <div id="result"></div>
     <div id="recordDisplay"></div>
@@ -74,7 +74,7 @@
 
         // Load records from CSV based on pool type
         function loadRecords(poolType) {
-            const fileName = poolType === "25m" ? "short_course_records.csv" : "Long_Course_Records.txt";
+            const fileName = poolType === "25m" ? "short_course_records.csv" : "long_course_records.csv";
 
             fetch(fileName)
                 .then(response => {
