@@ -5,38 +5,61 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FINA Points Calculator CDU Granada</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-        }
-        form {
-            margin-bottom: 20px;
-        }
-        label {
-            display: block;
-            margin-top: 10px;
-        }
-        input, select, button {
-            margin-top: 5px;
-            padding: 5px;
-            font-size: 1em;
-        }
-        #result {
-            margin-top: 20px;
-            font-size: 1.2em;
-            font-weight: bold;
-        }
+      body {
+          font-family: Arial, sans-serif;
+          margin: 20px;
+          text-align: center;
+      }
+      form {
+          margin-bottom: 20px;
+      }
+      label {
+          display: block;
+          margin-top: 10px;
+          text-align: left;
+      }
+      input, select, button {
+          margin-top: 5px;
+          padding: 5px;
+          font-size: 1em;
+      }
+      #result, #recordDisplay {
+          margin-top: 20px;
+          font-size: 1.2em;
+          font-weight: bold;
+      }
+      #resetButton {
+          background-color: gray;
+          color: red;
+          font-weight: bold;
+          margin-top: 20px;
+          display: block;
+          padding: 10px 15px;
+          border: none;
+          cursor: pointer;
+      }
+      #resetButton:hover {
+          opacity: 0.8;
+      }
+      #logo {
+          width: 200px; /* Adjust as needed */
+          margin-bottom: 20px;
+      }
     </style>
   </head>
   <body>
+    <!-- CDU Granada Image at the Top -->
+    <img id="logo" src="CDU Granada.png" alt="CDU Granada Logo">
+
     <h1>FINA Points Calculator CDU Granada</h1>
+
     <form id="finaForm">
       <label for="poolType">Pool Type:</label>
       <select id="poolType" required>
         <option value="25m">25m Pool</option>
         <option value="50m">50m Pool</option>
       </select>
-      
+
       <label for="time">Time (MM:SS.00):</label>
       <input id="time" placeholder="Enter time (e.g., 01:05.23)" required type="text">
 
@@ -71,126 +94,106 @@
 
       <button type="button" onclick="calculateFINA()">Calculate Points</button>
       <button type="button" onclick="showWorldRecord()">Show World Record</button>
+
+      <!-- Reset Button -->
+      <button id="resetButton" type="button" onclick="resetForm()">Reset All</button>
     </form>
+
     <div id="result"></div>
     <div id="recordDisplay"></div>
+
     <script>
-        let worldRecords = {}; // Object to store world records dynamically loaded
+      let worldRecords = {};
 
-        // Load records from CSV based on pool type
-        function loadRecords(poolType) {
-            const fileName = poolType === "25m" ? "short_course_records.csv" : "long_course_records.csv";
+      function loadRecords(poolType) {
+        const fileName = poolType === "25m" ? "short_course_records.csv" : "long_course_records.csv";
 
-            fetch(fileName)
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error(`Failed to load ${fileName}`);
-                    }
-                    return response.text();
-                })
-                .then(csvText => {
-                    parseCSV(csvText);
-                    loadEvents();
-                })
-                .catch(error => {
-                    console.error(error);
-                    document.getElementById("event").innerHTML = '<option value="">Failed to load events</option>';
-                });
-        }
+        fetch(fileName)
+          .then(response => {
+            if (!response.ok) throw new Error(`Failed to load ${fileName}`);
+            return response.text();
+          })
+          .then(csvText => {
+            parseCSV(csvText);
+            loadEvents();
+          })
+          .catch(error => {
+            console.error(error);
+            document.getElementById("event").innerHTML = '<option value="">Failed to load events</option>';
+          });
+      }
 
-        // Parse CSV into worldRecords object
-        function parseCSV(csvText) {
-            worldRecords = {}; // Clear previous records
-            const lines = csvText.split("\n").map(line => line.trim());
-            lines.forEach(line => {
-                const [event, gender, ageGroup, minutes, seconds, decimals] = line.split(",");
-                const key = `${event}_${gender}_${ageGroup}`;
-                const recordTime = parseInt(minutes, 10) * 60 + parseInt(seconds, 10) + parseFloat(decimals) / 100;
-                worldRecords[key] = recordTime; // Store record in seconds
-            });
-        }
-
-        // Populate swim events based on loaded worldRecords
-        function loadEvents() {
-            const uniqueEvents = new Set();
-            for (const key in worldRecords) {
-                const [event] = key.split("_");
-                uniqueEvents.add(event);
-            }
-
-            const eventSelect = document.getElementById("event");
-            eventSelect.innerHTML = Array.from(uniqueEvents)
-                .map(event => `<option value="${event}">${event}</option>`)
-                .join('');
-        }
-
-        function showWorldRecord() {
-            const poolType = document.getElementById("poolType").value.trim();
-            const event = document.getElementById("event").value.trim();
-            const gender = document.getElementById("gender").value.trim();
-            const ageGroup = document.getElementById("ageGroup").value.trim();
-
-            if (!event || !gender || !ageGroup) {
-                document.getElementById("recordDisplay").textContent = "Please select all fields to view the world record.";
-                return;
-            }
-
-            const recordKey = `${event}_${gender}_${ageGroup}`;
-            const worldRecord = worldRecords[recordKey];
-
-            if (!worldRecord) {
-                document.getElementById("recordDisplay").textContent = "World record not found for selected criteria.";
-            } else {
-                const recordMinutes = Math.floor(worldRecord / 60);
-                const recordSeconds = (worldRecord % 60).toFixed(2);
-                const formattedRecord = `${recordMinutes}:${recordSeconds.padStart(5, "0")}`;
-                
-                document.getElementById("recordDisplay").textContent = `World Record Time: ${formattedRecord}`;
-            }
-        }
-
-        function calculateFINA() {
-            const poolType = document.getElementById("poolType").value.trim();
-            const timeInput = document.getElementById("time").value.trim();
-            const event = document.getElementById("event").value.trim();
-            const gender = document.getElementById("gender").value.trim();
-            const ageGroup = document.getElementById("ageGroup").value.trim();
-
-            if (!timeInput || !event || !gender || !ageGroup) {
-                document.getElementById("result").textContent = "Please fill out all fields.";
-                return;
-            }
-
-            const timeParts = timeInput.split(":");
-            if (timeParts.length !== 2) {
-                document.getElementById("result").textContent = "Invalid time format. Use MM:SS.00.";
-                return;
-            }
-
-            const minutes = parseInt(timeParts[0], 10);
-            const seconds = parseFloat(timeParts[1]);
-            const totalTime = minutes * 60 + seconds;
-
-            const recordKey = `${event}_${gender}_${ageGroup}`;
-            const worldRecord = worldRecords[recordKey];
-
-            if (!worldRecord) {
-                document.getElementById("result").textContent = "World record not found for selected criteria.";
-                return;
-            }
-
-            const points = 1000 * Math.pow(worldRecord / totalTime, 3);
-            document.getElementById("result").textContent = `FINA Points: ${points.toFixed(2)}`;
-        }
-
-        document.getElementById("poolType").addEventListener("change", (event) => {
-            const poolType = event.target.value;
-            loadRecords(poolType);
+      function parseCSV(csvText) {
+        worldRecords = {};
+        const lines = csvText.split("\n").map(line => line.trim());
+        lines.forEach(line => {
+          const [event, gender, ageGroup, minutes, seconds, decimals] = line.split(",");
+          const key = `${event}_${gender}_${ageGroup}`;
+          worldRecords[key] = parseFloat(minutes) * 60 + parseFloat(seconds) + parseFloat(`0.${decimals}`);
         });
+      }
 
-        document.addEventListener("DOMContentLoaded", () => {
-            loadRecords("25m"); // Load 25m pool records by default
-        });
+      function loadEvents() {
+        const uniqueEvents = new Set();
+        for (const key in worldRecords) {
+          const [event] = key.split("_");
+          uniqueEvents.add(event);
+        }
+        document.getElementById("event").innerHTML = Array.from(uniqueEvents)
+          .map(event => `<option value="${event}">${event}</option>`)
+          .join('');
+      }
+
+      function calculateFINA() {
+        const timeInput = document.getElementById("time").value.trim();
+        const event = document.getElementById("event").value.trim();
+        const gender = document.getElementById("gender").value.trim();
+        const ageGroup = document.getElementById("ageGroup").value.trim();
+
+        if (!timeInput || !event || !gender || !ageGroup) {
+          document.getElementById("result").textContent = "Please fill out all fields.";
+          return;
+        }
+
+        const [minutes, seconds] = timeInput.split(":").map(Number);
+        const totalTime = minutes * 60 + parseFloat(seconds);
+
+        const recordKey = `${event}_${gender}_${ageGroup}`;
+        const worldRecord = worldRecords[recordKey];
+
+        if (!worldRecord) {
+          document.getElementById("result").textContent = "World record not found for selected criteria.";
+          return;
+        }
+
+        const points = 1000 * Math.pow(worldRecord / totalTime, 3);
+        document.getElementById("result").textContent = `FINA Points: ${points.toFixed(2)}`;
+      }
+
+      function showWorldRecord() {
+        const event = document.getElementById("event").value.trim();
+        const gender = document.getElementById("gender").value.trim();
+        const ageGroup = document.getElementById("ageGroup").value.trim();
+        const recordKey = `${event}_${gender}_${ageGroup}`;
+        const worldRecord = worldRecords[recordKey];
+
+        if (worldRecord) {
+          const minutes = Math.floor(worldRecord / 60);
+          const seconds = (worldRecord % 60).toFixed(2).padStart(5, "0");
+          document.getElementById("recordDisplay").textContent = `World Record Time: ${minutes}:${seconds}`;
+        } else {
+          document.getElementById("recordDisplay").textContent = "World record not found.";
+        }
+      }
+
+      function resetForm() {
+        document.getElementById("finaForm").reset();
+        document.getElementById("result").textContent = "";
+        document.getElementById("recordDisplay").textContent = "";
+      }
+
+      document.getElementById("poolType").addEventListener("change", (e) => loadRecords(e.target.value));
+      document.addEventListener("DOMContentLoaded", () => loadRecords("25m"));
     </script>
   </body>
 </html>
