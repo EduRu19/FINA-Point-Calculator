@@ -29,7 +29,7 @@
       }
       #resetButton {
           background-color: gray;
-          color: red;
+          color: black;
           font-weight: bold;
           margin-top: 20px;
           display: block;
@@ -42,8 +42,8 @@
       }
       /* New style for the relay button to differentiate it */
       #relayButton {
-          background-color: #007bff; /* Blue color */
-          color: white;
+          background-color: green; 
+          color: black;
           font-weight: bold;
           margin-top: 10px; /* Separator from reset */
           display: block;
@@ -52,7 +52,7 @@
           cursor: pointer;
       }
       #relayButton:hover {
-          opacity: 0.9;
+          opacity: 0.8;
       }
       #logo {
           width: 200px; /* Adjust as needed */
@@ -60,35 +60,27 @@
       }
     </style>
   </head>
-  <body>
-    <img id="logo" src="CDU Granada.png" alt="CDU Granada Logo">
-
+  <body> <img id="logo" src="CDU%20Granada.png" alt="CDU Granada Logo">
     <h1>FINA Points Calculator CDU Granada</h1>
-
-    <form id="finaForm">
-      <label for="poolType">Pool Type:</label>
-      <select id="poolType" required>
+    <form id="finaForm"> <label for="poolType">Pool Type:</label>
+      <select id="poolType" required="">
         <option value="25m">25m Pool</option>
         <option value="50m">50m Pool</option>
       </select>
+      <label for="time">Time (MM:SS.00):</label> <input id="time" placeholder="Enter time (e.g., 01:05.23)"
 
-      <label for="time">Time (MM:SS.00):</label>
-      <input id="time" placeholder="Enter time (e.g., 01:05.23)" required type="text">
-
-      <label for="event">Swim Event:</label>
-      <select id="event" required>
+        required="" type="text"> <label for="event">Swim Event:</label>
+      <select id="event" required="">
         <option value="">Loading events...</option>
       </select>
-
       <label for="gender">Gender:</label>
-      <select id="gender" required>
+      <select id="gender" required="">
         <option value="">Select Gender</option>
         <option value="Masculino">Masculino</option>
         <option value="Femenino">Femenino</option>
       </select>
-
       <label for="ageGroup">Age Group:</label>
-      <select id="ageGroup" required>
+      <select id="ageGroup" required="">
         <option value="">Select Age Group</option>
         <option value="20-24">20-24</option>
         <option value="25-29">25-29</option>
@@ -103,19 +95,13 @@
         <option value="70-74">70-74</option>
         <option value="75-79">75-79</option>
       </select>
-
       <button type="button" onclick="calculateFINA()">Calculate Points</button>
       <button type="button" onclick="showWorldRecord()">Show World Record</button>
-
       <button id="resetButton" type="button" onclick="resetForm()">Reset All</button>
-      
-      <button id="relayButton" type="button" onclick="window.location.href='relevos.html'">Crear Relevos</button>
-
-    </form>
-
+      <button id="relayButton" type="button" onclick="window.location.href='relevos CDU Granada Masters.html'">Crear
+        Relevos</button> </form>
     <div id="result"></div>
     <div id="recordDisplay"></div>
-
     <script>
       let worldRecords = {};
 
@@ -209,5 +195,6 @@
       document.getElementById("poolType").addEventListener("change", (e) => loadRecords(e.target.value));
       document.addEventListener("DOMContentLoaded", () => loadRecords("25m"));
     </script>
+    
   </body>
 </html>
