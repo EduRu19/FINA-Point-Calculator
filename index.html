@@ -40,6 +40,20 @@
       #resetButton:hover {
           opacity: 0.8;
       }
+      /* New style for the relay button to differentiate it */
+      #relayButton {
+          background-color: #007bff; /* Blue color */
+          color: white;
+          font-weight: bold;
+          margin-top: 10px; /* Separator from reset */
+          display: block;
+          padding: 10px 15px;
+          border: none;
+          cursor: pointer;
+      }
+      #relayButton:hover {
+          opacity: 0.9;
+      }
       #logo {
           width: 200px; /* Adjust as needed */
           margin-bottom: 20px;
@@ -47,7 +61,6 @@
     </style>
   </head>
   <body>
-    <!-- CDU Granada Image at the Top -->
     <img id="logo" src="CDU Granada.png" alt="CDU Granada Logo">
 
     <h1>FINA Points Calculator CDU Granada</h1>
@@ -94,8 +107,10 @@
       <button type="button" onclick="calculateFINA()">Calculate Points</button>
       <button type="button" onclick="showWorldRecord()">Show World Record</button>
 
-      <!-- Reset Button -->
       <button id="resetButton" type="button" onclick="resetForm()">Reset All</button>
+      
+      <button id="relayButton" type="button" onclick="window.location.href='relevos.html'">Crear Relevos</button>
+
     </form>
 
     <div id="result"></div>
