@@ -21,46 +21,23 @@
           width: 200px;
           margin-bottom: 20px;
       }
-      #filters {
-          display: flex;
-          gap: 20px;
-          margin-bottom: 30px;
-          align-items: center;
-          padding: 10px;
-          border: 1px solid #ddd;
-          border-radius: 5px;
-          background-color: #f9f9f9;
-      }
-      #filters label, #filters select {
-          font-size: 1em;
-      }
-      #filters select {
-          padding: 8px;
-          border-radius: 4px;
-          border: 1px solid #ccc;
-      }
       table {
-          width: 100%;
+          width: 400px; /* Constrain width for simple table */
           border-collapse: collapse;
           margin-top: 20px;
-          font-size: 0.9em;
+          font-size: 1.1em;
       }
       th, td {
           border: 1px solid #ccc;
-          padding: 8px;
-          text-align: center;
+          padding: 10px;
+          text-align: left;
       }
       th {
           background-color: #007bff;
           color: white;
       }
-      .time-col {
-          white-space: nowrap;
-          font-family: monospace;
-          font-weight: bold;
-      }
-      .selected-stroke {
-          background-color: #e0f7fa;
+      td:last-child {
+          text-align: center;
       }
     </style>
   </head>
@@ -70,31 +47,8 @@
 
     <img id="logo" src="CDU Granada.png" alt="CDU Granada Logo">
 
-    <h1>Relevos CDU Granada Masters</h1>
+    <h1>Disponibilidad de Nadadores</h1>
     
-    <div id="filters">
-        <label for="genderFilter">Género:</label>
-        <select id="genderFilter" onchange="filterAndRenderTable()">
-            <option value="Todos">Todos</option>
-            <option value="H">Hombre</option>
-            <option value="M">Mujer</option>
-            <option value="Mixto">Mixto</option>
-        </select>
-
-        <label for="relayTypeFilter">Tipo de Relevo:</label>
-        <select id="relayTypeFilter" onchange="filterAndRenderTable()">
-            <option value="Libre">Libre (Crol)</option>
-            <option value="Estilos">Estilos (Medley)</option>
-        </select>
-
-        <label for="lengthFilter">Longitud:</label>
-        <select id="lengthFilter" onchange="filterAndRenderTable()">
-            <option value="50">4x50</option>
-            <option value="100">4x100</option>
-            <option value="200">4x200</option>
-        </select>
-    </div>
-
     <div id="swimmerData">
       <p>Cargando datos de la hoja de cálculo...</p>
     </div>
@@ -107,16 +61,26 @@
       let rawSwimmerData = [];
       let headers = [];
 
-      // Helper function to convert time string (MM:SS.00) to total seconds
-      function timeToSeconds(timeStr) {
-          // Check for empty or invalid time format
-          if (!timeStr || typeof timeStr !== 'string' || timeStr.indexOf(':') === -1) return Infinity; 
-          const parts = timeStr.split(':');
-          const minutes = parseInt(parts[0], 10) || 0;
-          const seconds = parseFloat(parts[1]) || 0;
-          return (minutes * 60) + seconds;
+      // --- LOCAL STORAGE FUNCTIONS ---
+
+      // Function to save the availability state of a swimmer
+      function saveAvailability(swimmerName, isChecked) {
+          try {
+              // The key in local storage will be "availability_[Swimmer Name]"
+              localStorage.setItem(`availability_${swimmerName}`, isChecked);
+          } catch (e) {
+              console.error("Error saving to local storage:", e);
+          }
       }
-      
+
+      // Function to load the availability state of a swimmer
+      function loadAvailability(swimmerName) {
+          // Returns 'true'/'false' as a string, or null if not found
+          return localStorage.getItem(`availability_${swimmerName}`);
+      }
+
+      // --- DATA FETCHING AND RENDERING ---
+
       // Main function to fetch data from the Google Sheet
       function loadSwimmerData() {
           fetch(SHEET_URL)
@@ -137,104 +101,51 @@
                   rawSwimmerData = lines.slice(1).map(line => line.split(",").slice(0, 13));
 
                   // 3. Render the table now that data is available
-                  filterAndRenderTable();
+                  renderAvailabilityTable();
               })
               .catch(error => {
                   console.error('Error fetching data from Google Sheet:', error);
-                  document.getElementById('swimmerData').innerHTML = '<p style="color:red; font-weight:bold;">⚠️ Error al cargar los datos. Por favor, asegúrese de que la hoja de cálculo es pública y el enlace de la hoja está en el primer tab ("gid=0").</p>';
+                  document.getElementById('swimmerData').innerHTML = '<p style="color:red; font-weight:bold;">⚠️ Error al cargar los datos. Por favor, asegúrese de que la hoja de cálculo es pública.</p>';
               });
       }
 
-      // Main function to parse, filter, and render the table (now uses global data)
-      function filterAndRenderTable() {
-          // If data hasn't been fetched yet, stop
+      // Function to render the simple Name and Checkbox table
+      function renderAvailabilityTable() {
           if (rawSwimmerData.length === 0) return;
 
-          // Get filter selections
-          const genderFilter = document.getElementById('genderFilter').value;
-          const relayTypeFilter = document.getElementById('relayTypeFilter').value;
-          const lengthFilter = document.getElementById('lengthFilter').value;
-
-          // 1. Determine the columns needed for the selected relay length
-          const lengthPrefix = lengthFilter + (lengthFilter === '50' ? '' : '0'); 
-          const freeStyleCol = headers.findIndex(h => h === lengthPrefix + 'L'); 
-          const backCol = headers.findIndex(h => h === lengthPrefix + 'E');      
-          const flyCol = headers.findIndex(h => h === lengthPrefix + 'M');       
-          const breastCol = headers.findIndex(h => h === lengthPrefix + 'B');    
+          const swimmerNameIndex = 0; // Column A: Nombre
+          const availabilityHeader = headers[12]; // Column M: Disponible
           
-          // Define the columns to always show (Name, Gender, Year Born)
-          const fixedCols = [0, 1, 2];
-          let strokeCols = [];
-
-          if (relayTypeFilter === 'Libre') {
-              strokeCols = [freeStyleCol];
-          } else if (relayTypeFilter === 'Estilos') {
-              // Estilos (Medley) requires times for Back, Fly, Breast, and Free (in that order for the relay calculation)
-              strokeCols = [backCol, flyCol, breastCol, freeStyleCol]; 
-          }
-
-          const visibleColIndices = [...fixedCols, ...strokeCols];
-          const filteredHeaders = visibleColIndices.map(index => headers[index]);
-
-          // 2. Filter data by Gender
-          let filteredData = rawSwimmerData.filter(row => {
-              const swimmerGender = row[1]; // Gender is in column 1
-              if (genderFilter === 'Todos' || genderFilter === 'Mixto') return true;
-              return swimmerGender === genderFilter;
-          });
-          
-          // 3. Sort data by best time (using the first required stroke for simplicity, which is Free/Crol time)
-          if (strokeCols.length > 0) {
-              const sortColIndex = strokeCols[0];
-              filteredData.sort((a, b) => {
-                  return timeToSeconds(a[sortColIndex]) - timeToSeconds(b[sortColIndex]);
-              });
-          }
-
-          // 4. Generate Table HTML
           let tableHTML = '<table><thead><tr>';
           
-          filteredHeaders.forEach(header => {
-              tableHTML += `<th>${header}</th>`;
-          });
-
-          tableHTML += `<th>Tiempo Total</th>`;
+          tableHTML += `<th>${headers[swimmerNameIndex]}</th>`;
+          tableHTML += `<th>${availabilityHeader}</th>`;
+          
           tableHTML += '</tr></thead><tbody>';
 
           // Process and display filtered data rows
-          filteredData.forEach(row => {
-              let totalSeconds = 0;
-              let rowHTML = '<tr>';
+          rawSwimmerData.forEach(row => {
+              const swimmerName = row[swimmerNameIndex].replace(/"/g, ''); // Clean quotes from names
               
-              visibleColIndices.forEach((colIndex, index) => {
-                  const cellValue = row[colIndex];
-                  let className = '';
-                  
-                  if (strokeCols.includes(colIndex)) {
-                      className = 'time-col';
-                      totalSeconds += timeToSeconds(cellValue);
+              // Load saved state from Local Storage, default to FALSE if not found
+              const savedState = loadAvailability(swimmerName);
+              let isChecked = savedState === 'true'; 
 
-                      // Highlight the specific stroke time for the selected relay
-                      if (relayTypeFilter === 'Libre' && headers[colIndex] === lengthPrefix + 'L') {
-                          className += ' selected-stroke';
-                      } 
-                      if (relayTypeFilter === 'Estilos' && (headers[colIndex].endsWith('E') || headers[colIndex].endsWith('M') || headers[colIndex].endsWith('B') || headers[colIndex].endsWith('L'))) {
-                           className += ' selected-stroke';
-                      }
-                  }
+              // If the state is not in local storage, use the value from the sheet (if needed)
+              // Note: For simplicity, we prioritize the local storage state.
 
-                  rowHTML += `<td class="${className}">${cellValue}</td>`;
-              });
-
-              // Calculate and format the Total Time
-              const totalMinutes = Math.floor(totalSeconds / 60);
-              const remainingSeconds = (totalSeconds % 60).toFixed(2).padStart(5, '0');
-              const totalTimeDisplay = `${totalMinutes.toString().padStart(2, '0')}:${remainingSeconds}`;
-
-              // Display Total Time
-              rowHTML += `<td class="time-col">${totalTimeDisplay}</td>`; 
-              rowHTML += '</tr>';
-              tableHTML += rowHTML;
+              tableHTML += '<tr>';
+              tableHTML += `<td>${swimmerName}</td>`;
+              
+              // Create the checkbox input
+              tableHTML += `<td>
+                              <input type="checkbox" 
+                                     id="check_${swimmerName.replace(/\s/g, '_')}"
+                                     ${isChecked ? 'checked' : ''}
+                                     onchange="saveAvailability('${swimmerName}', this.checked)">
+                            </td>`;
+              
+              tableHTML += '</tr>';
           });
 
           tableHTML += '</tbody></table>';
