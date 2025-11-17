@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FINA Points Calculator CDU Granada</title>
     <style>
+      /* ... (Your existing CSS remains the same) ... */
       body {
           font-family: Arial, sans-serif;
           margin: 20px;
@@ -60,16 +61,18 @@
       }
     </style>
   </head>
-  <body> <img id="logo" src="CDU%20Granada.png" alt="CDU Granada Logo">
+  <body> 
+    <img id="logo" src="CDU%20Granada.png" alt="CDU Granada Logo">
     <h1>FINA Points Calculator CDU Granada</h1>
-    <form id="finaForm"> <label for="poolType">Pool Type:</label>
+    <form id="finaForm"> 
+      <label for="poolType">Pool Type:</label>
       <select id="poolType" required="">
         <option value="25m">25m Pool</option>
         <option value="50m">50m Pool</option>
       </select>
-      <label for="time">Time (MM:SS.00):</label> <input id="time" placeholder="Enter time (e.g., 01:05.23)"
-
-        required="" type="text"> <label for="event">Swim Event:</label>
+      <label for="time">Time (MM:SS.00):</label> 
+      <input id="time" placeholder="Enter time (e.g., 01:05.23)" required="" type="text"> 
+      <label for="event">Swim Event:</label>
       <select id="event" required="">
         <option value="">Loading events...</option>
       </select>
@@ -98,12 +101,16 @@
       <button type="button" onclick="calculateFINA()">Calculate Points</button>
       <button type="button" onclick="showWorldRecord()">Show World Record</button>
       <button id="resetButton" type="button" onclick="resetForm()">Reset All</button>
+      
       <button id="relayButton" type="button" onclick="goToRelayPage()">
-        Crear Relevos </button>
+        Crear Relevos
+      </button> 
+      
     </form>
     <div id="result"></div>
     <div id="recordDisplay"></div>
     <script>
+
       let worldRecords = {};
 
       function loadRecords(poolType) {
@@ -191,6 +198,11 @@
         document.getElementById("finaForm").reset();
         document.getElementById("result").textContent = "";
         document.getElementById("recordDisplay").textContent = "";
+      }
+
+      function goToRelayPage() {
+          // This line directs the browser to the new HTML page
+          window.location.href = 'Relevos CDU Granada Masters.html'; 
       }
 
       document.getElementById("poolType").addEventListener("change", (e) => loadRecords(e.target.value));
