@@ -1,17 +1,108 @@
-<script>
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Relevos CDU Granada Masters</title>
+    <style>
+      body {
+          font-family: Arial, sans-serif;
+          margin: 20px;
+      }
+      #homeButton {
+          font-size: 2em;
+          text-decoration: none;
+          display: block;
+          margin-bottom: 20px;
+          width: 50px;
+          text-align: left;
+      }
+      #logo {
+          width: 200px;
+          margin-bottom: 20px;
+      }
+      /* New and updated button styles */
+      #filterButton, #resetButton {
+          padding: 10px 15px;
+          font-size: 1em;
+          border: none;
+          border-radius: 5px;
+          cursor: pointer;
+          margin-right: 10px; /* Space between buttons */
+          margin-bottom: 20px;
+          transition: background-color 0.2s;
+          /* Requested styling */
+          color: black;
+          font-weight: bold;
+      }
+
+      #filterButton {
+          background-color: #28a745; /* Green color for 'Available' */
+      }
+
+      #filterButton:hover {
+          background-color: #218838;
+      }
+      
+      #resetButton {
+          background-color: #ffc107; /* Yellow/Warning color for Reset */
+      }
+
+      #resetButton:hover {
+          background-color: #e0a800;
+      }
+      
+      /* Table styles */
+      table {
+          width: 400px; /* Constrain width for simple table */
+          border-collapse: collapse;
+          margin-top: 20px;
+          font-size: 1.1em;
+      }
+      th, td {
+          border: 1px solid #ccc;
+          padding: 10px;
+          text-align: left;
+      }
+      th {
+          background-color: #007bff;
+          color: white;
+      }
+      td:last-child {
+          text-align: center;
+      }
+    </style>
+  </head>
+  <body>
+    
+    <a href="index.html" id="homeButton" title="Volver a la calculadora">🏠</a>
+
+    <img id="logo" src="CDU Granada.png" alt="CDU Granada Logo">
+
+    <h1>Disponibilidad de Nadadores</h1>
+    
+    <button id="filterButton">Mostrar SÓLO Disponibles</button>
+    <button id="resetButton">Resetear Disponibilidad</button>
+    
+    <div id="swimmerData">
+      <p>Cargando datos de la hoja de cálculo...</p>
+    </div>
+
+    <script>
+      // URL for fetching the data as CSV
       const SHEET_URL = 'https://docs.google.com/spreadsheets/d/1kFZ04xvfnTW-lyxa9oeiZZqBTNC1SGPWkCNtgRy8zMk/gviz/tq?tqx=out:csv&gid=0';
-      // FIX 1: The Web App URL MUST be wrapped in quotes ('').
+      // URL for the Google Apps Script Web App (API for writing data)
       const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbwFODQqr1Vquiu3S6AJL-yCFEXgYHB_FXutupO0r-gNILICfzBPSfC_RpTOGwDX5cCveA/exec';
 
       let rawSwimmerData = [];
       let headers = [];
       let isFiltered = false; // Tracks the filter state
 
-      // --- NEW LOCAL STORAGE & API FUNCTIONS (Keep these) ---
+      // --- LOCAL STORAGE & API FUNCTIONS ---
       
-      // NEW: Function to send the update to the Apps Script API AND save locally
+      // Function to save the state locally AND send the update to the Apps Script API
       function saveAvailability(swimmerName, isChecked) {
-          // 1. Save to Local Storage (immediate feedback)
+          // 1. Save to Local Storage (for immediate feedback on refresh)
           try {
               localStorage.setItem(`availability_${swimmerName}`, isChecked);
           } catch (e) {
@@ -44,18 +135,17 @@
           });
       }
 
+      // Function to load the availability state of a swimmer from local storage
       function loadAvailability(swimmerName) {
           return localStorage.getItem(`availability_${swimmerName}`);
       }
       
-      // NEW: Function to clear all saved availability statuses
+      // Function to clear all saved availability statuses in local storage
       function resetAvailability() {
           if (!confirm("¿Estás seguro de que quieres resetear la disponibilidad de TODOS los nadadores?")) {
               return; 
           }
-          
-          // Note: The Apps Script needs a separate function to reset the whole sheet,
-          // but this function correctly clears the LOCAL state.
+
           for (let i = 0; i < localStorage.length; i++) {
               const key = localStorage.key(i);
               if (key && key.startsWith('availability_')) { 
@@ -77,7 +167,6 @@
 
       function loadSwimmerData() {
           fetch(SHEET_URL)
-              // ... (rest of the loadSwimmerData function is correct) ...
               .then(response => {
                   if (!response.ok) {
                       throw new Error('Network response was not ok');
@@ -99,7 +188,7 @@
               });
       }
       
-      // ... (toggleFilter function is correct) ...
+      // Function to toggle the filter and re-render the table
       function toggleFilter() {
           isFiltered = !isFiltered;
           renderAvailabilityTable();
@@ -114,19 +203,20 @@
           }
       }
 
-
-      // ... (renderAvailabilityTable function is correct) ...
+      // Function to render the table based on current filter state
       function renderAvailabilityTable() {
           if (rawSwimmerData.length === 0) return;
 
           const swimmerNameIndex = 0;
           const availabilityHeader = headers[12];
           
+          // Apply filter based on isFiltered state
           const dataToRender = rawSwimmerData.filter(row => {
               const swimmerName = row[swimmerNameIndex].replace(/"/g, ''); 
               const savedState = loadAvailability(swimmerName);
               const isChecked = savedState === 'true';
 
+              // If filter is OFF, show all. If filter is ON, show only checked swimmers.
               return !isFiltered || isChecked; 
           });
           
@@ -157,10 +247,12 @@
           document.getElementById('swimmerData').innerHTML = tableHTML;
       }
 
-      // Start the data loading process when the page loads
+      // Start the data loading process when the page loads and attach button listeners
       document.addEventListener('DOMContentLoaded', () => {
           loadSwimmerData();
           document.getElementById('filterButton').addEventListener('click', toggleFilter);
           document.getElementById('resetButton').addEventListener('click', resetAvailability);
       });
     </script>
+  </body>
+</html>
