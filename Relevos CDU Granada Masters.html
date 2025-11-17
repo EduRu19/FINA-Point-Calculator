@@ -1,108 +1,47 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Relevos CDU Granada Masters</title>
-    <style>
-      body {
-          font-family: Arial, sans-serif;
-          margin: 20px;
-      }
-      #homeButton {
-          font-size: 2em;
-          text-decoration: none;
-          display: block;
-          margin-bottom: 20px;
-          width: 50px;
-          text-align: left;
-      }
-      #logo {
-          width: 200px;
-          margin-bottom: 20px;
-      }
-      /* New and updated button styles */
-      #filterButton, #resetButton {
-          padding: 10px 15px;
-          font-size: 1em;
-          border: none;
-          border-radius: 5px;
-          cursor: pointer;
-          margin-right: 10px; /* Space between buttons */
-          margin-bottom: 20px;
-          transition: background-color 0.2s;
-          /* Requested styling */
-          color: black;
-          font-weight: bold;
-      }
-
-      #filterButton {
-          background-color: #28a745; /* Green color for 'Available' */
-      }
-
-      #filterButton:hover {
-          background-color: #218838;
-      }
-      
-      #resetButton {
-          background-color: #ffc107; /* Yellow/Warning color for Reset */
-      }
-
-      #resetButton:hover {
-          background-color: #e0a800;
-      }
-      
-      /* Table styles */
-      table {
-          width: 400px; /* Constrain width for simple table */
-          border-collapse: collapse;
-          margin-top: 20px;
-          font-size: 1.1em;
-      }
-      th, td {
-          border: 1px solid #ccc;
-          padding: 10px;
-          text-align: left;
-      }
-      th {
-          background-color: #007bff;
-          color: white;
-      }
-      td:last-child {
-          text-align: center;
-      }
-    </style>
-  </head>
-  <body>
-    
-    <a href="index.html" id="homeButton" title="Volver a la calculadora">🏠</a>
-
-    <img id="logo" src="CDU Granada.png" alt="CDU Granada Logo">
-
-    <h1>Disponibilidad de Nadadores</h1>
-    
-    <button id="filterButton">Mostrar SÓLO Disponibles</button>
-    <button id="resetButton">Resetear Disponibilidad</button>
-    
-    <div id="swimmerData">
-      <p>Cargando datos de la hoja de cálculo...</p>
-    </div>
-
-    <script>
+<script>
       const SHEET_URL = 'https://docs.google.com/spreadsheets/d/1kFZ04xvfnTW-lyxa9oeiZZqBTNC1SGPWkCNtgRy8zMk/gviz/tq?tqx=out:csv&gid=0';
+      // FIX 1: The Web App URL MUST be wrapped in quotes ('').
+      const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbwFODQqr1Vquiu3S6AJL-yCFEXgYHB_FXutupO0r-gNILICfzBPSfC_RpTOGwDX5cCveA/exec';
 
       let rawSwimmerData = [];
       let headers = [];
       let isFiltered = false; // Tracks the filter state
 
-      // --- LOCAL STORAGE FUNCTIONS ---
-
+      // --- NEW LOCAL STORAGE & API FUNCTIONS (Keep these) ---
+      
+      // NEW: Function to send the update to the Apps Script API AND save locally
       function saveAvailability(swimmerName, isChecked) {
+          // 1. Save to Local Storage (immediate feedback)
           try {
               localStorage.setItem(`availability_${swimmerName}`, isChecked);
           } catch (e) {
               console.error("Error saving to local storage:", e);
           }
+          
+          // 2. Send update to Google Sheet API
+          fetch(WEB_APP_URL, {
+              method: 'POST',
+              mode: 'cors', 
+              cache: 'no-cache',
+              headers: {
+                  'Content-Type': 'application/json'
+              },
+              body: JSON.stringify({
+                  name: swimmerName,
+                  isAvailable: isChecked
+              })
+          })
+          .then(response => response.json())
+          .then(data => {
+              if (data.success) {
+                  console.log(`API Success: ${data.message}`);
+              } else {
+                  console.error(`API Error: ${data.error}`);
+              }
+          })
+          .catch(error => {
+              console.error('Fetch error when updating sheet:', error);
+          });
       }
 
       function loadAvailability(swimmerName) {
@@ -114,10 +53,12 @@
           if (!confirm("¿Estás seguro de que quieres resetear la disponibilidad de TODOS los nadadores?")) {
               return; 
           }
-
+          
+          // Note: The Apps Script needs a separate function to reset the whole sheet,
+          // but this function correctly clears the LOCAL state.
           for (let i = 0; i < localStorage.length; i++) {
               const key = localStorage.key(i);
-              if (key && key.startsWith('availability_')) { // Check for key existence and prefix
+              if (key && key.startsWith('availability_')) { 
                   localStorage.removeItem(key);
               }
           }
@@ -136,6 +77,7 @@
 
       function loadSwimmerData() {
           fetch(SHEET_URL)
+              // ... (rest of the loadSwimmerData function is correct) ...
               .then(response => {
                   if (!response.ok) {
                       throw new Error('Network response was not ok');
@@ -157,7 +99,7 @@
               });
       }
       
-      // NEW: Function to toggle the filter and re-render the table
+      // ... (toggleFilter function is correct) ...
       function toggleFilter() {
           isFiltered = !isFiltered;
           renderAvailabilityTable();
@@ -173,19 +115,18 @@
       }
 
 
+      // ... (renderAvailabilityTable function is correct) ...
       function renderAvailabilityTable() {
           if (rawSwimmerData.length === 0) return;
 
           const swimmerNameIndex = 0;
           const availabilityHeader = headers[12];
           
-          // Apply filter based on isFiltered state
           const dataToRender = rawSwimmerData.filter(row => {
               const swimmerName = row[swimmerNameIndex].replace(/"/g, ''); 
               const savedState = loadAvailability(swimmerName);
               const isChecked = savedState === 'true';
 
-              // If filter is OFF, show all. If filter is ON, show only checked swimmers.
               return !isFiltered || isChecked; 
           });
           
@@ -202,7 +143,6 @@
               tableHTML += '<tr>';
               tableHTML += `<td>${swimmerName}</td>`;
               
-              // Note: The onchange listener remains the same, saving to local storage.
               tableHTML += `<td>
                                 <input type="checkbox" 
                                        id="check_${swimmerName.replace(/\s/g, '_')}"
@@ -220,10 +160,7 @@
       // Start the data loading process when the page loads
       document.addEventListener('DOMContentLoaded', () => {
           loadSwimmerData();
-          // Event Listeners for the new buttons
           document.getElementById('filterButton').addEventListener('click', toggleFilter);
           document.getElementById('resetButton').addEventListener('click', resetAvailability);
       });
     </script>
-  </body>
-</html>
