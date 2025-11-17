@@ -21,6 +21,38 @@
           width: 200px;
           margin-bottom: 20px;
       }
+      /* New and updated button styles */
+      #filterButton, #resetButton {
+          padding: 10px 15px;
+          font-size: 1em;
+          border: none;
+          border-radius: 5px;
+          cursor: pointer;
+          margin-right: 10px; /* Space between buttons */
+          margin-bottom: 20px;
+          transition: background-color 0.2s;
+          /* Requested styling */
+          color: black;
+          font-weight: bold;
+      }
+
+      #filterButton {
+          background-color: #28a745; /* Green color for 'Available' */
+      }
+
+      #filterButton:hover {
+          background-color: #218838;
+      }
+      
+      #resetButton {
+          background-color: #ffc107; /* Yellow/Warning color for Reset */
+      }
+
+      #resetButton:hover {
+          background-color: #e0a800;
+      }
+      
+      /* Table styles */
       table {
           width: 400px; /* Constrain width for simple table */
           border-collapse: collapse;
@@ -49,39 +81,59 @@
 
     <h1>Disponibilidad de Nadadores</h1>
     
+    <button id="filterButton">Mostrar SÓLO Disponibles</button>
+    <button id="resetButton">Resetear Disponibilidad</button>
+    
     <div id="swimmerData">
       <p>Cargando datos de la hoja de cálculo...</p>
     </div>
 
     <script>
-      // The direct export URL for your Google Sheet data as CSV
       const SHEET_URL = 'https://docs.google.com/spreadsheets/d/1kFZ04xvfnTW-lyxa9oeiZZqBTNC1SGPWkCNtgRy8zMk/gviz/tq?tqx=out:csv&gid=0';
 
-      // Global variables to store the data once fetched
       let rawSwimmerData = [];
       let headers = [];
+      let isFiltered = false; // Tracks the filter state
 
       // --- LOCAL STORAGE FUNCTIONS ---
 
-      // Function to save the availability state of a swimmer
       function saveAvailability(swimmerName, isChecked) {
           try {
-              // The key in local storage will be "availability_[Swimmer Name]"
               localStorage.setItem(`availability_${swimmerName}`, isChecked);
           } catch (e) {
               console.error("Error saving to local storage:", e);
           }
       }
 
-      // Function to load the availability state of a swimmer
       function loadAvailability(swimmerName) {
-          // Returns 'true'/'false' as a string, or null if not found
           return localStorage.getItem(`availability_${swimmerName}`);
+      }
+      
+      // NEW: Function to clear all saved availability statuses
+      function resetAvailability() {
+          if (!confirm("¿Estás seguro de que quieres resetear la disponibilidad de TODOS los nadadores?")) {
+              return; 
+          }
+
+          for (let i = 0; i < localStorage.length; i++) {
+              const key = localStorage.key(i);
+              if (key && key.startsWith('availability_')) { // Check for key existence and prefix
+                  localStorage.removeItem(key);
+              }
+          }
+          
+          // Reset the filter state and re-render
+          isFiltered = false;
+          renderAvailabilityTable();
+          
+          // Reset the filter button appearance
+          const filterButton = document.getElementById('filterButton');
+          filterButton.textContent = 'Mostrar SÓLO Disponibles';
+          filterButton.style.backgroundColor = '#28a745';
       }
 
       // --- DATA FETCHING AND RENDERING ---
 
-      // Main function to fetch data from the Google Sheet
       function loadSwimmerData() {
           fetch(SHEET_URL)
               .then(response => {
@@ -94,13 +146,9 @@
                   const lines = csvText.trim().split("\n");
                   if (lines.length === 0) return;
 
-                  // 1. Store headers (up to column M, which is the 13th column, index 12)
                   headers = lines[0].split(",").slice(0, 13);
-                  
-                  // 2. Store raw data rows
                   rawSwimmerData = lines.slice(1).map(line => line.split(",").slice(0, 13));
 
-                  // 3. Render the table now that data is available
                   renderAvailabilityTable();
               })
               .catch(error => {
@@ -108,42 +156,59 @@
                   document.getElementById('swimmerData').innerHTML = '<p style="color:red; font-weight:bold;">⚠️ Error al cargar los datos. Por favor, asegúrese de que la hoja de cálculo es pública.</p>';
               });
       }
+      
+      // NEW: Function to toggle the filter and re-render the table
+      function toggleFilter() {
+          isFiltered = !isFiltered;
+          renderAvailabilityTable();
+          
+          const button = document.getElementById('filterButton');
+          if (isFiltered) {
+              button.textContent = 'Mostrar TODOS';
+              button.style.backgroundColor = '#dc3545'; // Red color when showing filtered view
+          } else {
+              button.textContent = 'Mostrar SÓLO Disponibles';
+              button.style.backgroundColor = '#28a745';
+          }
+      }
 
-      // Function to render the simple Name and Checkbox table
+
       function renderAvailabilityTable() {
           if (rawSwimmerData.length === 0) return;
 
-          const swimmerNameIndex = 0; // Column A: Nombre
-          const availabilityHeader = headers[12]; // Column M: Disponible
+          const swimmerNameIndex = 0;
+          const availabilityHeader = headers[12];
+          
+          // Apply filter based on isFiltered state
+          const dataToRender = rawSwimmerData.filter(row => {
+              const swimmerName = row[swimmerNameIndex].replace(/"/g, ''); 
+              const savedState = loadAvailability(swimmerName);
+              const isChecked = savedState === 'true';
+
+              // If filter is OFF, show all. If filter is ON, show only checked swimmers.
+              return !isFiltered || isChecked; 
+          });
           
           let tableHTML = '<table><thead><tr>';
-          
           tableHTML += `<th>${headers[swimmerNameIndex]}</th>`;
           tableHTML += `<th>${availabilityHeader}</th>`;
-          
           tableHTML += '</tr></thead><tbody>';
 
-          // Process and display filtered data rows
-          rawSwimmerData.forEach(row => {
-              const swimmerName = row[swimmerNameIndex].replace(/"/g, ''); // Clean quotes from names
-              
-              // Load saved state from Local Storage, default to FALSE if not found
+          dataToRender.forEach(row => {
+              const swimmerName = row[swimmerNameIndex].replace(/"/g, '');
               const savedState = loadAvailability(swimmerName);
-              let isChecked = savedState === 'true'; 
-
-              // If the state is not in local storage, use the value from the sheet (if needed)
-              // Note: For simplicity, we prioritize the local storage state.
+              let isChecked = savedState === 'true';
 
               tableHTML += '<tr>';
               tableHTML += `<td>${swimmerName}</td>`;
               
-              // Create the checkbox input
+              // Note: The onchange listener remains the same, saving to local storage.
               tableHTML += `<td>
-                              <input type="checkbox" 
-                                     id="check_${swimmerName.replace(/\s/g, '_')}"
-                                     ${isChecked ? 'checked' : ''}
-                                     onchange="saveAvailability('${swimmerName}', this.checked)">
-                            </td>`;
+                                <input type="checkbox" 
+                                       id="check_${swimmerName.replace(/\s/g, '_')}"
+                                       ${isChecked ? 'checked' : ''}
+                                       onchange="saveAvailability('${swimmerName}', this.checked)">
+                              </td>`;
               
               tableHTML += '</tr>';
           });
@@ -153,7 +218,12 @@
       }
 
       // Start the data loading process when the page loads
-      document.addEventListener('DOMContentLoaded', loadSwimmerData);
+      document.addEventListener('DOMContentLoaded', () => {
+          loadSwimmerData();
+          // Event Listeners for the new buttons
+          document.getElementById('filterButton').addEventListener('click', toggleFilter);
+          document.getElementById('resetButton').addEventListener('click', resetAvailability);
+      });
     </script>
   </body>
 </html>
