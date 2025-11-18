@@ -21,14 +21,14 @@
           width: 200px;
           margin-bottom: 20px;
       }
-      /* New and updated button styles */
-      #filterButton, #resetButton {
+      /* Updated button styles (only for Filter button) */
+      #filterButton {
           padding: 10px 15px;
           font-size: 1em;
           border: none;
           border-radius: 5px;
           cursor: pointer;
-          margin-right: 10px; /* Space between buttons */
+          margin-right: 10px; 
           margin-bottom: 20px;
           transition: background-color 0.2s;
           /* Requested styling */
@@ -42,14 +42,6 @@
 
       #filterButton:hover {
           background-color: #218838;
-      }
-      
-      #resetButton {
-          background-color: #ffc107; /* Yellow/Warning color for Reset */
-      }
-
-      #resetButton:hover {
-          background-color: #e0a800;
       }
       
       /* Table styles */
@@ -82,7 +74,6 @@
     <h1>Disponibilidad de Nadadores</h1>
     
     <button id="filterButton">Mostrar SÓLO Disponibles</button>
-    <button id="resetButton">Resetear Disponibilidad</button>
     
     <div id="swimmerData">
       <p>Cargando datos de la hoja de cálculo...</p>
@@ -91,48 +82,21 @@
     <script>
       // URL for fetching the data as CSV
       const SHEET_URL = 'https://docs.google.com/spreadsheets/d/1kFZ04xvfnTW-lyxa9oeiZZqBTNC1SGPWkCNtgRy8zMk/gviz/tq?tqx=out:csv&gid=0';
-      // URL for the Google Apps Script Web App (API for writing data)
-      const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbwFODQqr1Vquiu3S6AJL-yCFEXgYHB_FXutupO0r-gNILICfzBPSfC_RpTOGwDX5cCveA/exec';
 
       let rawSwimmerData = [];
       let headers = [];
       let isFiltered = false; // Tracks the filter state
 
-      // --- LOCAL STORAGE & API FUNCTIONS ---
+      // --- LOCAL STORAGE FUNCTIONS (Only saving/loading for local filtering) ---
       
-      // Function to save the state locally AND send the update to the Apps Script API
+      // Function to save the state locally for the checkbox status
       function saveAvailability(swimmerName, isChecked) {
-          // 1. Save to Local Storage (for immediate feedback on refresh)
           try {
+              // This is now purely local and does NOT call the API
               localStorage.setItem(`availability_${swimmerName}`, isChecked);
           } catch (e) {
               console.error("Error saving to local storage:", e);
           }
-          
-          // 2. Send update to Google Sheet API
-          fetch(WEB_APP_URL, {
-              method: 'POST',
-              mode: 'cors', 
-              cache: 'no-cache',
-              headers: {
-                  'Content-Type': 'application/json'
-              },
-              body: JSON.stringify({
-                  name: swimmerName,
-                  isAvailable: isChecked
-              })
-          })
-          .then(response => response.json())
-          .then(data => {
-              if (data.success) {
-                  console.log(`API Success: ${data.message}`);
-              } else {
-                  console.error(`API Error: ${data.error}`);
-              }
-          })
-          .catch(error => {
-              console.error('Fetch error when updating sheet:', error);
-          });
       }
 
       // Function to load the availability state of a swimmer from local storage
@@ -140,28 +104,7 @@
           return localStorage.getItem(`availability_${swimmerName}`);
       }
       
-      // Function to clear all saved availability statuses in local storage
-      function resetAvailability() {
-          if (!confirm("¿Estás seguro de que quieres resetear la disponibilidad de TODOS los nadadores?")) {
-              return; 
-          }
-
-          for (let i = 0; i < localStorage.length; i++) {
-              const key = localStorage.key(i);
-              if (key && key.startsWith('availability_')) { 
-                  localStorage.removeItem(key);
-              }
-          }
-          
-          // Reset the filter state and re-render
-          isFiltered = false;
-          renderAvailabilityTable();
-          
-          // Reset the filter button appearance
-          const filterButton = document.getElementById('filterButton');
-          filterButton.textContent = 'Mostrar SÓLO Disponibles';
-          filterButton.style.backgroundColor = '#28a745';
-      }
+      // The resetAvailability function has been DELETED.
 
       // --- DATA FETCHING AND RENDERING ---
 
@@ -233,6 +176,7 @@
               tableHTML += '<tr>';
               tableHTML += `<td>${swimmerName}</td>`;
               
+              // onchange calls the local saveAvailability function
               tableHTML += `<td>
                                 <input type="checkbox" 
                                        id="check_${swimmerName.replace(/\s/g, '_')}"
@@ -251,7 +195,7 @@
       document.addEventListener('DOMContentLoaded', () => {
           loadSwimmerData();
           document.getElementById('filterButton').addEventListener('click', toggleFilter);
-          document.getElementById('resetButton').addEventListener('click', resetAvailability);
+          // Event listener for resetButton has been DELETED.
       });
     </script>
   </body>
